@@ -10,4 +10,11 @@
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.90" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Cliente\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
