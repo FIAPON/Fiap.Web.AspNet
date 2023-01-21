@@ -1,7 +1,9 @@
 ﻿using Fiap.Web.AspNet.Controllers.Filters;
 using Fiap.Web.AspNet.Models;
 using Fiap.Web.AspNet.Repository;
+using Fiap.Web.AspNet.Repository.Context;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Fiap.Web.AspNet.Controllers
 {
@@ -10,10 +12,12 @@ namespace Fiap.Web.AspNet.Controllers
 
         private RepresentanteRepository representanteRepository;
 
-        public RepresentanteController()
+        // O parametro enviado no construtor do Controller é gerenciado pelo próprio framework .NET
+        // Esse recurso é chamada de Injeção de Dependência
+        public RepresentanteController(DataBaseContext dataBaseContext)
         {
 
-            representanteRepository = new RepresentanteRepository();    
+            representanteRepository = new RepresentanteRepository(dataBaseContext);    
         }
 
         [LogFilter]

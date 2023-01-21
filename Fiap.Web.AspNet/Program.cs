@@ -1,4 +1,13 @@
+using Fiap.Web.AspNet.Repository.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<DataBaseContext>(options =>
+    options.UseOracle(connectionString).EnableSensitiveDataLogging(true)
+);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

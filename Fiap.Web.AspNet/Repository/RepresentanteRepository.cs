@@ -1,22 +1,16 @@
 ﻿using Fiap.Web.AspNet.Models;
-using Oracle.ManagedDataAccess.Client;
+using Fiap.Web.AspNet.Repository.Context;
 
 namespace Fiap.Web.AspNet.Repository
 {
     public class RepresentanteRepository
     {
 
-        private string? connectionString;
-        private OracleConnection? connection;
+        private readonly DataBaseContext dataBaseContext;
 
-        public RepresentanteRepository()
+        public RepresentanteRepository(DataBaseContext ctx)
         {
-            connectionString = new ConfigurationBuilder()
-                                        .SetBasePath(Directory.GetCurrentDirectory())
-                                        .AddJsonFile("appsettings.json")
-                                        .Build().GetConnectionString("DatabaseConnection");
-
-            connection = new OracleConnection(connectionString);
+            dataBaseContext = ctx;
         }
 
 
@@ -25,129 +19,51 @@ namespace Fiap.Web.AspNet.Repository
         {
             var lista = new List<RepresentanteModel>();
 
-            using (connection)
-            {
-                var query = "SELECT REPRESENTANTEID, NOMEREPRESENTANTE, CPF FROM REPRESENTANTE";
-
-                connection.Open();
-
-                OracleCommand command = new OracleCommand(query, connection);
-                OracleDataReader dataReader = command.ExecuteReader();
-
-                while (dataReader.Read())
-                {
-                    // Recupera os dados
-                    RepresentanteModel representante = new RepresentanteModel();
-                    representante.RepresentanteId = Convert.ToInt32(dataReader["REPRESENTANTEID"]);
-                    representante.NomeRepresentante = dataReader["NOMEREPRESENTANTE"].ToString();
-                    representante.Cpf = dataReader["CPF"].ToString();
-
-                    // Adiciona o modelo da lista
-                    lista.Add(representante);
-                }
-
-                connection.Close();
-
-            } // Finaliza o objeto connection
-
-            // Retorna a lista
+            // Efetuando a listagem (Substituindo o Select *)
+            lista = dataBaseContext.Representante.ToList<RepresentanteModel>();
+            
             return lista;
-
         }
 
         public RepresentanteModel Consultar(int id)
         {
-            var representante = new RepresentanteModel();
-
-            using (connection)
-            {
-                var query = "SELECT REPRESENTANTEID, NOMEREPRESENTANTE, CPF FROM REPRESENTANTE WHERE REPRESENTANTEID = :ID ";
-
-                connection.Open();
-
-                OracleCommand command = new OracleCommand(query, connection);
-                command.Parameters.Add("ID", id);
-
-                OracleDataReader dataReader = command.ExecuteReader();
-
-                if (dataReader.Read())
-                {
-                    // Recupera os dados
-                    representante.RepresentanteId = Convert.ToInt32(dataReader["REPRESENTANTEID"]);
-                    representante.NomeRepresentante = dataReader["NOMEREPRESENTANTE"].ToString();
-                    representante.Cpf = dataReader["CPF"].ToString();
-                }
-
-                connection.Close();
-
-            } // Finaliza o objeto connection
-
-            // Retorna o objeto representante
+            // Recuperando o objeto Representante de um determinado Id
+            var representante = dataBaseContext.Representante.Find(id);
 
             return representante;
         }
 
         public void Inserir(RepresentanteModel representante)
         {
-            using (connection)
-            {
-                String query = "INSERT INTO REPRESENTANTE ( NOMEREPRESENTANTE, CPF ) VALUES ( :nome, :cpf ) ";
+            // a propriedade dataBaseContext é declarada no escopo da classe
+            // e sua instância é recebida pelo construtor da classe Repository
+            // veja na solução final da classe RepresentanteRepository
 
-                connection.Open();
+            // Adiciona o objeto preenchido pelo usuário
+            dataBaseContext.Representante.Add(representante);
 
-                OracleCommand command = new OracleCommand(query, connection);
-
-                // Adicionando o valor ao comando
-                command.Parameters.Add("nome", representante.NomeRepresentante);
-                command.Parameters.Add("cpf", representante.Cpf);
-
-                command.ExecuteNonQuery();
-                connection.Close();
-
-            }
+            // Salva as alterações
+            dataBaseContext.SaveChanges();
 
         }
 
         public void Alterar(RepresentanteModel representante)
         {
-            using (connection)
-            {
-                String query = "UPDATE REPRESENTANTE SET NOMEREPRESENTANTE = :nome, CPF = :cpf  WHERE REPRESENTANTEID = :id ";
+            dataBaseContext.Representante.Update(representante);
 
-                connection.Open();
-
-                OracleCommand command = new OracleCommand(query, connection);
-
-                // Adicionando o valor ao comando
-                command.Parameters.Add("nome", representante.NomeRepresentante);
-                command.Parameters.Add("cpf", representante.Cpf);
-                command.Parameters.Add("id", representante.RepresentanteId);
-
-
-                command.ExecuteNonQuery();
-                connection.Close();
-
-            }
+            // Salva as alterações
+            dataBaseContext.SaveChanges();
         }
 
         public void Excluir(int id)
         {
-            using (connection)
-            {
-                String query = "DELETE REPRESENTANTE WHERE REPRESENTANTEID = :id ";
+            var representante = new RepresentanteModel(id,"");
 
-                connection.Open();
+            dataBaseContext.Representante.Remove(representante);
 
-                OracleCommand command = new OracleCommand(query, connection);
+            // Salva as alterações
+            dataBaseContext.SaveChanges();
 
-                // Adicionando o valor ao comando
-                command.Parameters.Add("id", id);
-
-
-                command.ExecuteNonQuery();
-                connection.Close();
-
-            }
         }
 
 

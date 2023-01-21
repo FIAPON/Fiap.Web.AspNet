@@ -1,6 +1,7 @@
 ﻿using Fiap.Web.AspNet.Controllers.Filters;
 using Fiap.Web.AspNet.Models;
 using Fiap.Web.AspNet.Repository;
+using Fiap.Web.AspNet.Repository.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -12,11 +13,11 @@ namespace Fiap.Web.AspNet.Controllers
         private ClienteRepository clienteRepository;
         private RepresentanteRepository representanteRepository;
 
-        public ClienteController()
+        public ClienteController(DataBaseContext dataBaseContext)
         {
 
             clienteRepository = new ClienteRepository();    
-            representanteRepository = new RepresentanteRepository();
+            representanteRepository = new RepresentanteRepository(dataBaseContext);
         }
 
         [LogFilter]
