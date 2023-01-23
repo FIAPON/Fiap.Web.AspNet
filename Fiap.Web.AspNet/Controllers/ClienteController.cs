@@ -16,7 +16,7 @@ namespace Fiap.Web.AspNet.Controllers
         public ClienteController(DataBaseContext dataBaseContext)
         {
 
-            clienteRepository = new ClienteRepository();    
+            clienteRepository = new ClienteRepository(dataBaseContext);    
             representanteRepository = new RepresentanteRepository(dataBaseContext);
         }
 

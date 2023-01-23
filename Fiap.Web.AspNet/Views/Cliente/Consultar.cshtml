@@ -1,41 +1,41 @@
-﻿@model Fiap.Web.AspNet.Models.RepresentanteModel
+﻿@model Fiap.Web.AspNet.Models.ClienteModel
 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Representante - Consultar</title>
+    <title>Cliente - Consultar</title>
 </head>
 <body>
-    <h1>Representante - Consultar</h1>
+    <h1>Cliente - Consultar</h1>
 
     <div class="form-horizontal">
         <hr />
         <div class="form-group">
             <label><b>Id</b></label>
             <div class="col-md-10">
-                <span>@Model.RepresentanteId</span>
+                <span>@Model.ClienteId</span>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-md-2"><b>Cpf</b></label>
+            <label class="col-md-2"><b>Nome</b></label>
             <div class="col-md-10">
-                <span>@Model.Cpf</span>
+                <span>@Model.Nome</span>
             </div>
         </div>
 
         <div class="form-group">
-            <label><b>Nome</b></label>
+            <label><b>Representante</b></label>
             <div class="col-md-10">
-                <span>@Model.NomeRepresentante</span>
+                <span>@Model.Representante.NomeRepresentante</span>
             </div>
         </div>
         <hr />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <a asp-controller="Representante" asp-action="Index" class="btn btn-warning">Voltar</a>
+                <a asp-controller="Cliente" asp-action="Index" class="btn btn-warning">Voltar</a>
             </div>
         </div>
         <hr />

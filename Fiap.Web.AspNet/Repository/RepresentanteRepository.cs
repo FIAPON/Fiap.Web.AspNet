@@ -1,5 +1,6 @@
 ﻿using Fiap.Web.AspNet.Models;
 using Fiap.Web.AspNet.Repository.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fiap.Web.AspNet.Repository
 {
@@ -17,12 +18,67 @@ namespace Fiap.Web.AspNet.Repository
 
         public IList<RepresentanteModel> Listar()
         {
+
             var lista = new List<RepresentanteModel>();
 
             // Efetuando a listagem (Substituindo o Select *)
             lista = dataBaseContext.Representante.ToList<RepresentanteModel>();
             
             return lista;
+        }
+
+        public IList<RepresentanteModel> ListarRepresentantesComClientes()
+        {
+
+            var lista = new List<RepresentanteModel>();
+
+            lista = dataBaseContext.Representante
+                    .Include( r => r.Clientes)
+                        .ToList<RepresentanteModel>();
+
+            return lista;
+        }
+
+
+        public IList<RepresentanteModel> ListarOrdenadoPorNome()
+        {
+            var lista = new List<RepresentanteModel>();
+
+            lista = dataBaseContext
+                .Representante
+                .OrderBy( r => r.NomeRepresentante).ToList<RepresentanteModel>();
+
+            return lista;
+        }
+
+        public IList<RepresentanteModel> ListarOrdenadoPorNomeDescendente()
+        {
+            var lista = new List<RepresentanteModel>();
+
+            lista = dataBaseContext
+                .Representante
+                .OrderByDescending(r => r.NomeRepresentante).ToList<RepresentanteModel>();
+
+            return lista;
+        }
+
+
+        public RepresentanteModel ConsultarPorCpf(String cpf)
+        {
+            var representante = dataBaseContext.Representante.
+                    Where(r => r.Cpf == cpf).
+                        FirstOrDefault<RepresentanteModel>();
+
+            return representante;
+        }
+
+        public RepresentanteModel ConsultarPorParteNome(String nomeParcial)
+        {
+            var representante = dataBaseContext.Representante.
+                    Where(r => r.NomeRepresentante.Contains(nomeParcial)).
+                        FirstOrDefault<RepresentanteModel>();
+
+            return representante;
         }
 
         public RepresentanteModel Consultar(int id)
